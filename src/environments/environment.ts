@@ -2,7 +2,7 @@ import { LogLevel } from '../app/models/log-level';
 
 export const environment = {
   production: false,
-  appName: 'SDE2 Practice Questions',
+  appName: 'Question Bank',
   version: '1.0.0',
   logLevel: LogLevel.DEBUG
 };
