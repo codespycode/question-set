@@ -70,7 +70,7 @@
   { "id": 64, "url": "https://leetcode.com/problems/valid-anagram/", "topic": "String", "difficulty": "Easy" },
   { "id": 65, "url": "https://www.geeksforgeeks.org/problems/minimum-characters-to-be-added-at-front-to-make-string-palindrome/1", "topic": "String", "difficulty": "Hard" },
   { "id": 66, "url": "https://leetcode.com/problems/find-the-index-of-the-first-occurrence-in-a-string/", "topic": "String", "difficulty": "Easy" },
-  { "id": 67, "url": "https://www.geeksforgeeks.org/problems/search-pattern-rabin-karp-algorithm4012/1", "topic": "String", "difficulty": "Medium" },
+  { "id": 67, "url": "https://leetcode.com/problems/repeated-string-match/", "topic": "String", "difficulty": "Medium" },
   { "id": 68, "url": "https://leetcode.com/problems/longest-common-prefix/", "topic": "String", "difficulty": "Easy" },
   { "id": 69, "url": "https://leetcode.com/problems/roman-to-integer/", "topic": "String", "difficulty": "Easy" },
   { "id": 70, "url": "https://leetcode.com/problems/longest-palindromic-substring/", "topic": "String", "difficulty": "Medium" },
@@ -127,7 +127,7 @@
   { "id": 119, "url": "https://leetcode.com/problems/valid-palindrome/", "topic": "Recursion", "difficulty": "Easy" },
 
   { "id": 120, "url": "https://www.geeksforgeeks.org/problems/activity-selection-1587115620/1", "topic": "Greedy", "difficulty": "Easy" },
-  { "id": 121, "url": "https://www.geeksforgeeks.org/problems/number-of-coins1702/1", "topic": "Greedy", "difficulty": "Medium" },
+  { "id": 121, "url": "https://www.geeksforgeeks.org/problems/min-coin/1", "topic": "Greedy", "difficulty": "Medium" },
   { "id": 122, "url": "https://www.geeksforgeeks.org/problems/fractional-knapsack-1587115620/1", "topic": "Greedy", "difficulty": "Medium" },
   { "id": 123, "url": "https://www.geeksforgeeks.org/problems/job-sequencing-problem-1587115620/1", "topic": "Greedy", "difficulty": "Medium" },
   { "id": 124, "url": "https://www.geeksforgeeks.org/problems/minimum-platforms-1587115620/1", "topic": "Greedy", "difficulty": "Medium" },
@@ -187,13 +187,13 @@
   { "id": 174, "url": "https://www.geeksforgeeks.org/problems/bottom-view-of-binary-tree/1", "topic": "Tree", "difficulty": "Medium" },
   { "id": 175, "url": "https://leetcode.com/problems/binary-tree-right-side-view/", "topic": "Tree", "difficulty": "Medium" },
   { "id": 176, "url": "https://leetcode.com/problems/diameter-of-binary-tree/", "topic": "Tree", "difficulty": "Easy" },
-  { "id": 177, "url": "https://www.geeksforgeeks.org/problems/morris-traversal/1", "topic": "Tree", "difficulty": "Medium" },
+  { "id": 177, "url": "https://leetcode.com/problems/recover-binary-search-tree/", "topic": "Tree", "difficulty": "Medium" },
   { "id": 178, "url": "https://leetcode.com/problems/serialize-and-deserialize-binary-tree/", "topic": "Tree", "difficulty": "Hard" },
 
   { "id": 179, "url": "https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/", "topic": "BST", "difficulty": "Easy" },
   { "id": 180, "url": "https://leetcode.com/problems/kth-largest-element-in-a-stream/", "topic": "BST", "difficulty": "Easy" },
   { "id": 181, "url": "https://www.geeksforgeeks.org/problems/binary-tree-to-dll/1", "topic": "BST", "difficulty": "Hard" },
-  { "id": 182, "url": "https://www.geeksforgeeks.org/problems/maximum-sum-bst/1", "topic": "BST", "difficulty": "Hard" },
+  { "id": 182, "url": "https://leetcode.com/problems/maximum-sum-bst-in-binary-tree/", "topic": "BST", "difficulty": "Hard" },
   { "id": 183, "url": "https://leetcode.com/problems/binary-search-tree-iterator/", "topic": "BST", "difficulty": "Medium" },
   { "id": 184, "url": "https://leetcode.com/problems/two-sum-iv-input-is-a-bst/", "topic": "BST", "difficulty": "Easy" },
   { "id": 185, "url": "https://www.geeksforgeeks.org/problems/kth-largest-element-in-bst/1", "topic": "BST", "difficulty": "Easy" },
@@ -228,7 +228,7 @@
   { "id": 212, "url": "https://leetcode.com/problems/maximum-xor-with-an-element-from-array/", "topic": "Trie", "difficulty": "Hard" },
   { "id": 213, "url": "https://leetcode.com/problems/maximum-xor-of-two-numbers-in-an-array/", "topic": "Trie", "difficulty": "Medium" },
   { "id": 214, "url": "https://www.geeksforgeeks.org/problems/count-of-distinct-substrings/1", "topic": "Trie", "difficulty": "Medium" },
-  { "id": 215, "url": "https://www.geeksforgeeks.org/problems/longest-string-with-all-prefixes0535/1", "topic": "Trie", "difficulty": "Medium" },
+  { "id": 215, "url": "https://leetcode.com/problems/longest-word-in-dictionary/", "topic": "Trie", "difficulty": "Medium" },
   { "id": 216, "url": "https://www.geeksforgeeks.org/problems/trie-insert-and-search0651/1", "topic": "Trie", "difficulty": "Medium" },
   { "id": 217, "url": "https://leetcode.com/problems/implement-trie-prefix-tree/", "topic": "Trie", "difficulty": "Medium" }
 ]
