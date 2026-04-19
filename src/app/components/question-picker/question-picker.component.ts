@@ -76,7 +76,14 @@ export class QuestionPickerComponent implements OnInit {
 
   extractName(url: string): string {
     const parts = url.replace(/\/+$/, '').split('/');
-    return parts[parts.length - 1]
+    let slug = parts[parts.length - 1];
+    // GFG URLs end with /1, so use the previous segment
+    if (/^\d+$/.test(slug) && parts.length > 1) {
+      slug = parts[parts.length - 2];
+    }
+    return slug
+      .replace(/\d+$/, '')   // strip trailing number suffixes (e.g. "second-largest3735")
+      .replace(/-+$/, '')     // strip trailing hyphens left over
       .split('-')
       .map(w => w.charAt(0).toUpperCase() + w.slice(1))
       .join(' ');

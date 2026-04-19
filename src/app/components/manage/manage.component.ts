@@ -245,7 +245,13 @@ export class ManageComponent implements OnInit {
 
   extractName(url: string): string {
     const parts = url.replace(/\/+$/, '').split('/');
-    return parts[parts.length - 1]
+    let slug = parts[parts.length - 1];
+    if (/^\d+$/.test(slug) && parts.length > 1) {
+      slug = parts[parts.length - 2];
+    }
+    return slug
+      .replace(/\d+$/, '')
+      .replace(/-+$/, '')
       .split('-')
       .map(w => w.charAt(0).toUpperCase() + w.slice(1))
       .join(' ');
