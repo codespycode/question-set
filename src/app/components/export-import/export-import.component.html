@@ -1,0 +1,24 @@
+<div class="container">
+  <h1>Export / Import Questions</h1>
+
+  <div class="actions">
+    <div class="card">
+      <h2>Export</h2>
+      <p>Download all questions (including custom) as a <strong>questions.json</strong> file.</p>
+      <button class="btn primary" (click)="exportQuestions()">Download questions.json</button>
+    </div>
+
+    <div class="card">
+      <h2>Import</h2>
+      <p>Import questions from a JSON file. Duplicates (same URL) are automatically skipped.</p>
+      <label class="btn secondary file-label">
+        Choose File
+        <input type="file" accept=".json" (change)="importQuestions($event)" hidden />
+      </label>
+    </div>
+  </div>
+
+  @if (message) {
+    <p class="message" [class.error]="messageType === 'error'">{{ message }}</p>
+  }
+</div>

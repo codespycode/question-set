@@ -1,0 +1,169 @@
+<div class="container">
+  <h1>Manage Questions</h1>
+
+  @if (!isAuthenticated) {
+    <div class="form-card password-gate">
+      <h2>🔒 Enter Password</h2>
+      <div class="form-group">
+        <label for="manage-pass">Password</label>
+        <input
+          id="manage-pass"
+          type="password"
+          [(ngModel)]="passwordInput"
+          (keydown)="onPasswordKeydown($event)"
+          placeholder="Enter manage password…"
+          autocomplete="off"
+        />
+      </div>
+      @if (passwordError) {
+        <p class="password-error">{{ passwordError }}</p>
+      }
+      <button class="btn primary" (click)="checkPassword()">Unlock</button>
+    </div>
+  } @else {
+
+  <!-- Add Question Form -->
+  <div class="form-card">
+    <h2>Add New Question</h2>
+
+    <!-- Search / Typeahead -->
+    <div class="form-group search-wrapper">
+      <label for="search">Search Problem</label>
+      <div class="search-input-row">
+        <input
+          #searchInput
+          id="search"
+          type="text"
+          [(ngModel)]="searchQuery"
+          (input)="onSearchInput()"
+          (keydown)="onSearchKeydown($event)"
+          (focus)="searchQuery.length >= 2 && onSearchInput()"
+          placeholder="Type problem name... e.g. Two Sum, LRU Cache"
+          autocomplete="off"
+        />
+        @if (searchQuery) {
+          <button class="search-clear" (click)="clearSearch()" title="Clear">&times;</button>
+        }
+      </div>
+
+      @if (showDropdown) {
+        <ul class="search-dropdown">
+          @for (r of searchResults; track r.url; let i = $index) {
+            <li
+              [class.highlighted]="i === highlightIndex"
+              (click)="selectResult(r)"
+              (mouseenter)="highlightIndex = i"
+            >
+              <span class="sr-name">{{ r.entry.name }}</span>
+              <span class="sr-meta">
+                <span class="badge topic">{{ r.entry.topic }}</span>
+                <span class="badge" [ngClass]="r.entry.difficulty.toLowerCase()">{{ r.entry.difficulty }}</span>
+                <span class="sr-platform">{{ r.platform }}</span>
+              </span>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+
+    <!-- Platform picker (shown after selecting a problem) -->
+    @if (selectedEntry && selectedEntry.urls.length > 1) {
+      <div class="form-group platform-picker">
+        <label>Platform</label>
+        <div class="platform-btns">
+          @for (p of selectedEntry.urls; track p.url; let i = $index) {
+            <button
+              class="platform-btn"
+              [class.active]="i === selectedPlatformIndex"
+              (click)="selectPlatform(i)"
+            >{{ p.platform }}</button>
+          }
+        </div>
+      </div>
+    }
+
+    <div class="form-group">
+      <label for="url">URL</label>
+      <input id="url" type="url" [(ngModel)]="newUrl" placeholder="https://leetcode.com/problems/..." />
+    </div>
+
+    <div class="form-group">
+      <label>Topic</label>
+      <div class="topic-toggle">
+        <button class="toggle-btn" [class.active]="!useCustomTopic" (click)="useCustomTopic = false">
+          Existing Topic
+        </button>
+        <button class="toggle-btn" [class.active]="useCustomTopic" (click)="useCustomTopic = true">
+          New Topic
+        </button>
+      </div>
+      @if (!useCustomTopic) {
+        <select [(ngModel)]="newTopic">
+          <option value="">Select topic...</option>
+          @for (t of topics; track t) {
+            <option [value]="t">{{ t }}</option>
+          }
+        </select>
+      } @else {
+        <input type="text" [(ngModel)]="newCustomTopic" placeholder="e.g. Backtracking, Greedy, Bit Manipulation..." />
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="difficulty">Difficulty</label>
+      <select id="difficulty" [(ngModel)]="newDifficulty">
+        @for (d of difficulties; track d) {
+          <option [value]="d">{{ d }}</option>
+        }
+      </select>
+    </div>
+
+    <button class="btn primary" (click)="addQuestion()" [disabled]="!newUrl.trim() || !effectiveTopic">
+      + Add Question
+    </button>
+  </div>
+
+  @if (message) {
+    <p class="message fade-in">{{ message }}</p>
+  }
+
+  @if (loadError) {
+    <p class="error">{{ loadError }}</p>
+  }
+
+  <!-- Question List -->
+  <div class="list-section">
+    <div class="list-header">
+      <h2>All Questions ({{ filteredQuestions.length }})</h2>
+      <select [(ngModel)]="filterTopic">
+        <option value="">All Topics</option>
+        @for (t of topics; track t) {
+          <option [value]="t">{{ t }}</option>
+        }
+      </select>
+    </div>
+
+    <ul class="question-list">
+      @for (q of filteredQuestions; track q.id) {
+        <li class="fade-in">
+          <div class="q-info">
+            <a [href]="q.url" target="_blank" rel="noopener noreferrer">{{ extractName(q.url) }}</a>
+            <span class="badges">
+              @if (q.topic) {
+                <span class="badge topic">{{ q.topic }}</span>
+              }
+              @if (q.difficulty) {
+                <span class="badge" [ngClass]="q.difficulty.toLowerCase()">{{ q.difficulty }}</span>
+              }
+            </span>
+          </div>
+          <button class="btn-remove" (click)="removeQuestion(q.id)" title="Remove">✕</button>
+        </li>
+      } @empty {
+        <p class="hint">No questions found.</p>
+      }
+    </ul>
+  </div>
+
+  } <!-- end @else authenticated -->
+</div>

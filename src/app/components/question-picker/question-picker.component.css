@@ -1,0 +1,275 @@
+.container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  text-align: center;
+  width: 100%;
+}
+
+h1 {
+  font-size: clamp(1.2rem, 4vw, 1.6rem);
+  margin-bottom: 1.5rem;
+  color: #1a1a2e;
+}
+
+.controls {
+  margin-bottom: 1.5rem;
+}
+
+.control-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.75rem;
+}
+
+label {
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+select {
+  padding: 0.45rem 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  background: #fff;
+  min-height: 44px;
+}
+
+.btn {
+  padding: 0.5rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  min-height: 44px;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.btn.primary {
+  background: #4361ee;
+  color: #fff;
+}
+
+.btn.primary:hover:not(:disabled) {
+  background: #3a56d4;
+}
+
+.btn.secondary {
+  background: #e2e8f0;
+  color: #333;
+}
+
+.btn.secondary:hover:not(:disabled) {
+  background: #cbd5e1;
+}
+
+.error {
+  background: #fef2f2;
+  color: #b91c1c;
+  padding: 0.75rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.question-list {
+  list-style: none;
+  padding: 0;
+  text-align: left;
+}
+
+.question-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  transition: box-shadow 0.2s, opacity 0.3s;
+}
+
+.question-list li:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.question-list li.done {
+  background: #ecfdf5;
+  border-color: #a7f3d0;
+}
+
+.question-list li.done a {
+  text-decoration: line-through;
+  color: #6b7280;
+}
+
+.q-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.q-info a {
+  color: #4361ee;
+  text-decoration: none;
+  font-weight: 500;
+  word-break: break-word;
+}
+
+.q-info a:hover {
+  text-decoration: underline;
+  color: #3a56d4;
+}
+
+.badges {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.badge {
+  font-size: 0.7rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 99px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.badge.topic {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.badge.easy {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.badge.medium {
+  background: #fef9c3;
+  color: #854d0e;
+}
+
+.badge.hard {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.btn-done {
+  padding: 0.3rem 0.7rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 0.8rem;
+  margin-left: 0.75rem;
+  white-space: nowrap;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.btn-done:hover {
+  background: #f0fdf4;
+  border-color: #86efac;
+}
+
+.btn-done.is-done {
+  background: #dcfce7;
+  border-color: #86efac;
+  color: #166534;
+}
+
+.hint {
+  color: #888;
+  margin-top: 2rem;
+}
+
+/* fade in animation */
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .control-row {
+    gap: 0.4rem;
+  }
+
+  .btn {
+    padding: 0.5rem 0.9rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+  .container {
+    padding: 0.75rem;
+  }
+
+  .control-row {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .control-row select {
+    width: 100%;
+  }
+
+  .control-row .btn {
+    width: 100%;
+  }
+
+  .question-list li {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.75rem;
+  }
+
+  .btn-done {
+    margin-left: 0;
+    width: 100%;
+    text-align: center;
+    padding: 0.5rem;
+    min-height: 44px;
+  }
+
+  .badges {
+    flex-wrap: wrap;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 340px) {
+  h1 {
+    font-size: 1.1rem;
+  }
+
+  .badge {
+    font-size: 0.6rem;
+    padding: 0.1rem 0.35rem;
+  }
+}

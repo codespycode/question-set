@@ -1,0 +1,15 @@
+<nav>
+  <a class="brand" routerLink="/">{{ appName }}</a>
+  <div class="nav-links">
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+    <a routerLink="/manage" routerLinkActive="active">Manage</a>
+    <a routerLink="/history" routerLinkActive="active">History</a>
+    <a routerLink="/data" routerLinkActive="active">Export/Import</a>
+  </div>
+</nav>
+
+<main>
+  <router-outlet />
+</main>
+
+<footer>{{ appName }} v{{ version }}</footer>

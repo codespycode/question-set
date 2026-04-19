@@ -1,0 +1,68 @@
+<div class="container">
+  <h1>SDE2 Practice Questions</h1>
+
+  <div class="controls">
+    <div class="control-row">
+      <label for="count">Count:</label>
+      <select id="count" [(ngModel)]="count">
+        @for (c of counts; track c) {
+          <option [value]="c">{{ c }}</option>
+        }
+      </select>
+
+      <label for="topic">Topic:</label>
+      <select id="topic" [(ngModel)]="selectedTopic">
+        <option value="">All Topics</option>
+        @for (t of topics; track t) {
+          <option [value]="t">{{ t }}</option>
+        }
+      </select>
+
+      <label for="difficulty">Difficulty:</label>
+      <select id="difficulty" [(ngModel)]="selectedDifficulty">
+        <option value="">All</option>
+        @for (d of difficulties; track d) {
+          <option [value]="d">{{ d }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="control-row">
+      <button class="btn primary" (click)="pickQuestions()" [disabled]="loading">
+        {{ loading ? 'Loading...' : 'Pick Random Questions' }}
+      </button>
+      <button class="btn secondary" (click)="refresh()" [disabled]="loading">Refresh</button>
+    </div>
+  </div>
+
+  @if (error) {
+    <p class="error">{{ error }}</p>
+  }
+
+  @if (questions.length) {
+    <ul class="question-list">
+      @for (q of questions; track q.id) {
+        <li [class.done]="q.done" class="fade-in">
+          <div class="q-info">
+            <a [href]="q.url" target="_blank" rel="noopener noreferrer">
+              Question {{ q.id }} — {{ extractName(q.url) }}
+            </a>
+            <span class="badges">
+              @if (q.topic) {
+                <span class="badge topic">{{ q.topic }}</span>
+              }
+              @if (q.difficulty) {
+                <span class="badge" [ngClass]="q.difficulty.toLowerCase()">{{ q.difficulty }}</span>
+              }
+            </span>
+          </div>
+          <button class="btn-done" [class.is-done]="q.done" (click)="toggleDone(q)">
+            {{ q.done ? '✔ Done' : 'Mark Done' }}
+          </button>
+        </li>
+      }
+    </ul>
+  } @else if (!loading && !error) {
+    <p class="hint">Click "Pick Random Questions" to get started.</p>
+  }
+</div>

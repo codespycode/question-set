@@ -1,0 +1,28 @@
+<div class="container">
+  <h1>Session History</h1>
+
+  @if (history.length) {
+    <button class="btn danger" (click)="clearHistory()">Clear History</button>
+
+    @for (entry of history; track entry.timestamp) {
+      <div class="session-card fade-in">
+        <p class="timestamp">{{ formatDate(entry.timestamp) }}</p>
+        <ul>
+          @for (q of entry.questions; track q.id) {
+            <li>
+              <a [href]="q.url" target="_blank" rel="noopener noreferrer">
+                Q{{ q.id }} — {{ extractName(q.url) }}
+              </a>
+              <span class="badges">
+                <span class="badge topic">{{ q.topic }}</span>
+                <span class="badge" [ngClass]="q.difficulty.toLowerCase()">{{ q.difficulty }}</span>
+              </span>
+            </li>
+          }
+        </ul>
+      </div>
+    }
+  } @else {
+    <p class="hint">No history yet. Pick some questions first!</p>
+  }
+</div>
