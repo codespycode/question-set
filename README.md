@@ -45,7 +45,7 @@ This builds the app for production with the correct base href and deploys to the
 1. **Build for production:**
 
    ```bash
-   ng build --configuration production --base-href /question-bank/
+   ng build --configuration production --base-href /question-set/
    ```
 
 2. **Deploy to GitHub Pages:**
@@ -57,14 +57,14 @@ This builds the app for production with the correct base href and deploys to the
 3. **Access the app at:**
 
    ```
-   https://strcpy123.github.io/question-bank/
+   https://codespycode.github.io/question-set/
    ```
 
 ### How it works
 
 - **Hash-based routing** (`/#/manage`, `/#/history`, etc.) avoids 404 errors on page refresh.
 - A `404.html` fallback redirects any deep links back to the app.
-- All asset paths are relative so they resolve correctly under the `/question-bank/` subpath.
+- All asset paths are relative so they resolve correctly under the `/question-set/` subpath.
 
 ## Running unit tests
 
