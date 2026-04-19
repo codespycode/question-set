@@ -6,6 +6,7 @@ import { QuestionService } from '../../services/question.service';
 import { StorageService } from '../../services/storage.service';
 import { Question, Difficulty } from '../../models/question.model';
 import { CatalogSearchService, SearchResult } from '../../services/catalog-search.service';
+import { LoggerService } from '../../services/logger.service';
 import { CatalogEntry } from '../../models/problem-catalog';
 
 @Component({
@@ -51,7 +52,8 @@ export class ManageComponent implements OnInit {
     private questionService: QuestionService,
     private storage: StorageService,
     private catalogSearch: CatalogSearchService,
-    private http: HttpClient
+    private http: HttpClient,
+    private logger: LoggerService
   ) {}
 
   ngOnInit(): void {
@@ -214,6 +216,7 @@ export class ManageComponent implements OnInit {
     this.storage.addQuestion(question);
     this.resetForm();
     this.loadQuestions();
+    this.logger.info('Manage', 'Question added', { id: question.id, topic: question.topic });
     this.message = `Added: ${this.extractName(url)}`;
     setTimeout(() => (this.message = ''), 3000);
   }
@@ -222,6 +225,7 @@ export class ManageComponent implements OnInit {
     if (!confirm('Remove this question?')) return;
     this.storage.removeQuestion(id);
     this.loadQuestions();
+    this.logger.info('Manage', 'Question removed', { id });
     this.message = 'Question removed.';
     setTimeout(() => (this.message = ''), 3000);
   }

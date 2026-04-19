@@ -4,6 +4,7 @@ import { Observable, of, throwError } from 'rxjs';
 import { map, tap, catchError } from 'rxjs/operators';
 import { Question, Difficulty } from '../models/question.model';
 import { StorageService } from './storage.service';
+import { LoggerService } from './logger.service';
 
 export interface FilterOptions {
   topic?: string;
@@ -17,11 +18,13 @@ export class QuestionService {
 
   constructor(
     private http: HttpClient,
-    private storage: StorageService
+    private storage: StorageService,
+    private logger: LoggerService
   ) {
     const last = this.storage.getLastSelected();
     this.lastPickedIds = last.map(q => q.id);
     this.seeded = this.storage.isSeeded();
+    this.logger.debug('QuestionService', 'Initialized', { seeded: this.seeded, lastPickedCount: this.lastPickedIds.length });
   }
 
   /**
@@ -36,8 +39,12 @@ export class QuestionService {
       tap(questions => {
         this.storage.setQuestions(questions);
         this.seeded = true;
+        this.logger.info('QuestionService', 'Seeded questions from JSON', { count: questions.length });
       }),
-      catchError(() => throwError(() => new Error('Unable to load questions. Please refresh.')))
+      catchError(err => {
+        this.logger.error('QuestionService', 'Failed to load questions.json', err);
+        return throwError(() => new Error('Unable to load questions. Please refresh.'));
+      })
     );
   }
 
@@ -70,6 +77,7 @@ export class QuestionService {
         this.storage.setLastSelected(result);
         this.storage.addHistory(result);
 
+        this.logger.info('QuestionService', 'Picked random questions', { requested: count, returned: result.length, filters });
         return result;
       })
     );

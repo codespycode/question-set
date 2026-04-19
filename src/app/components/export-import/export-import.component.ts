@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { StorageService } from '../../services/storage.service';
+import { LoggerService } from '../../services/logger.service';
 import { Question } from '../../models/question.model';
 
 @Component({
@@ -12,7 +13,7 @@ export class ExportImportComponent {
   message = '';
   messageType: 'success' | 'error' = 'success';
 
-  constructor(private storage: StorageService) {}
+  constructor(private storage: StorageService, private logger: LoggerService) {}
 
   exportQuestions(): void {
     const questions = this.storage.getQuestions().map(({ done, ...rest }) => rest as Question);
@@ -23,6 +24,7 @@ export class ExportImportComponent {
     a.download = 'questions.json';
     a.click();
     URL.revokeObjectURL(url);
+    this.logger.info('ExportImport', 'Exported questions', { count: questions.length });
     this.showMessage(`Exported ${questions.length} questions.`, 'success');
   }
 
@@ -45,6 +47,7 @@ export class ExportImportComponent {
 
         const addedCount = this.storage.mergeQuestions(questions);
         if (addedCount > 0) {
+          this.logger.info('ExportImport', 'Imported questions', { added: addedCount });
           this.showMessage(`Imported ${addedCount} new question${addedCount > 1 ? 's' : ''}. Duplicates were skipped.`, 'success');
         } else {
           this.showMessage('No new questions to import — all already exist.', 'success');

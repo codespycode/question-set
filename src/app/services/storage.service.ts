@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Question, HistoryEntry } from '../models/question.model';
+import { LoggerService } from './logger.service';
 
 @Injectable({ providedIn: 'root' })
 export class StorageService {
@@ -7,6 +8,8 @@ export class StorageService {
   private readonly DONE_KEY = 'qb_done_ids';
   private readonly HISTORY_KEY = 'qb_history';
   private readonly LAST_KEY = 'qb_last_selected';
+
+  constructor(private logger: LoggerService) {}
 
   // --- Questions Pool ---
 
@@ -67,6 +70,9 @@ export class StorageService {
 
     if (newOnes.length > 0) {
       this.writeJson(this.QUESTIONS_KEY, [...existing, ...newOnes]);
+      this.logger.info('StorageService', 'Merged new questions', { added: newOnes.length, total: existing.length + newOnes.length });
+    } else {
+      this.logger.debug('StorageService', 'No new questions to merge');
     }
     return newOnes.length;
   }
@@ -127,7 +133,8 @@ export class StorageService {
     try {
       const raw = localStorage.getItem(key);
       return raw ? JSON.parse(raw) : null;
-    } catch {
+    } catch (e) {
+      this.logger.error('StorageService', `Failed to parse localStorage key: ${key}`, e);
       return null;
     }
   }

@@ -1,0 +1,256 @@
+<div class="dashboard">
+
+  <!-- ── Summary Cards ── -->
+  <div class="cards-row">
+    <div class="card card-total">
+      <div class="card-icon">&#128218;</div>
+      <div class="card-body">
+        <div class="card-value">{{ totalQuestions }}</div>
+        <div class="card-label">Total Questions</div>
+      </div>
+    </div>
+    <div class="card card-done">
+      <div class="card-icon">&#9989;</div>
+      <div class="card-body">
+        <div class="card-value">{{ totalDone }}</div>
+        <div class="card-label">Completed</div>
+      </div>
+    </div>
+    <div class="card card-sessions">
+      <div class="card-icon">&#9889;</div>
+      <div class="card-body">
+        <div class="card-value">{{ totalSessions }}</div>
+        <div class="card-label">Practice Sessions</div>
+      </div>
+    </div>
+    <div class="card card-rate">
+      <div class="card-icon">&#127942;</div>
+      <div class="card-body">
+        <div class="card-value">{{ completionRate }}%</div>
+        <div class="card-label">Completion Rate</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Quick Stats ── -->
+  <div class="stats-row">
+    <div class="stat-item">
+      <span class="stat-value">{{ avgPerSession }}</span>
+      <span class="stat-label">Avg / Session</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value">{{ activeDaysCount }}</span>
+      <span class="stat-label">Active Days</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value">{{ uniqueQuestionsPracticed }}</span>
+      <span class="stat-label">Unique Practiced</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value">{{ bestDay ? bestDay.count : '\u2014' }}</span>
+      <span class="stat-label">Best Day {{ bestDay ? '(' + bestDay.label + ')' : '' }}</span>
+    </div>
+  </div>
+
+  <!-- ── Streak + Progress Ring ── -->
+  <div class="mid-row">
+    <div class="panel panel-streak">
+      <div class="panel-header">Practice Streak</div>
+      <div class="streak-content">
+        <div class="streak-block">
+          <div class="streak-number">{{ streak.current }}</div>
+          <div class="streak-label">Current Streak<br /><span class="streak-unit">days</span></div>
+        </div>
+        <div class="streak-divider"></div>
+        <div class="streak-block">
+          <div class="streak-number best">{{ streak.longest }}</div>
+          <div class="streak-label">Best Streak<br /><span class="streak-unit">days</span></div>
+        </div>
+      </div>
+      <div class="streak-tip" *ngIf="streak.current > 0 && practicedToday">
+        &#128293; Keep going! You're on a {{ streak.current }}-day streak.
+      </div>
+      <div class="streak-tip" *ngIf="streak.current > 0 && !practicedToday">
+        &#128293; {{ streak.current }}-day streak! Practice today to keep it alive.
+      </div>
+      <div class="streak-tip cold" *ngIf="streak.current === 0">
+        Start practicing today to build your streak!
+      </div>
+    </div>
+
+    <div class="panel panel-ring">
+      <div class="panel-header">Overall Progress</div>
+      <div class="ring-container">
+        <svg viewBox="0 0 120 120" class="progress-ring">
+          <circle class="ring-bg" cx="60" cy="60" r="50" />
+          <circle
+            class="ring-fill"
+            cx="60" cy="60" r="50"
+            [style.strokeDasharray]="314"
+            [style.strokeDashoffset]="314 - (314 * completionRate / 100)"
+          />
+        </svg>
+        <div class="ring-text">
+          <span class="ring-percent">{{ completionRate }}%</span>
+          <span class="ring-sub">{{ totalDone }}/{{ totalQuestions }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Activity Chart (14 days) ── -->
+  <div class="panel">
+    <div class="panel-header">Daily Activity <span class="panel-sub">Last 14 days</span></div>
+    <div class="activity-chart">
+      <div class="activity-bar-group" *ngFor="let day of dailyActivity">
+        <div class="activity-stack">
+          <div class="act-bar act-bar-picked" [style.height]="barHeight(day.picked)">
+            <span class="bar-tooltip" *ngIf="day.picked">{{ day.picked }}q</span>
+          </div>
+        </div>
+        <span class="activity-label">{{ day.label }}</span>
+      </div>
+    </div>
+    <div class="activity-legend">
+      <span class="legend-item"><span class="legend-dot picked-dot"></span> Questions Practiced</span>
+    </div>
+  </div>
+
+  <!-- ── Heatmap ── -->
+  <div class="panel">
+    <div class="panel-header">Activity Heatmap <span class="panel-sub">Last 12 weeks</span></div>
+    <div class="heatmap-wrapper">
+      <div class="heatmap-days-label">
+        <span>Mon</span>
+        <span>Wed</span>
+        <span>Fri</span>
+      </div>
+      <div class="heatmap-grid">
+        <div class="heatmap-col" *ngFor="let week of heatmapWeeks">
+          <div
+            *ngFor="let day of week.days"
+            class="heatmap-cell"
+            [ngClass]="'heat-' + day.level"
+            [title]="day.date + ': ' + day.count + ' questions'"
+          ></div>
+        </div>
+      </div>
+    </div>
+    <div class="heatmap-legend">
+      <span class="heatmap-legend-label">Less</span>
+      <div class="heatmap-cell heat-0"></div>
+      <div class="heatmap-cell heat-1"></div>
+      <div class="heatmap-cell heat-2"></div>
+      <div class="heatmap-cell heat-3"></div>
+      <div class="heatmap-cell heat-4"></div>
+      <span class="heatmap-legend-label">More</span>
+    </div>
+  </div>
+
+  <!-- ── Topic + Difficulty ── -->
+  <div class="split-row">
+
+    <!-- Topic Breakdown -->
+    <div class="panel">
+      <div class="panel-header">Topics Breakdown</div>
+      <div class="topic-list" *ngIf="topicStats.length; else noTopics">
+        <div class="topic-row" *ngFor="let t of topicStats">
+          <div class="topic-info">
+            <span class="topic-name">{{ t.topic }}</span>
+            <span class="topic-count">{{ t.done }}/{{ t.total }}</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" [style.width.%]="t.percent"></div>
+          </div>
+          <span class="topic-percent">{{ t.percent }}%</span>
+        </div>
+      </div>
+      <ng-template #noTopics>
+        <p class="empty-msg">No questions yet.</p>
+      </ng-template>
+    </div>
+
+    <!-- Difficulty Breakdown -->
+    <div class="panel">
+      <div class="panel-header">Difficulty Distribution</div>
+      <div class="diff-chart" *ngIf="difficultyStats.length; else noDiff">
+        <div class="diff-item" *ngFor="let d of difficultyStats">
+          <div class="diff-ring-container">
+            <svg viewBox="0 0 80 80" class="diff-ring">
+              <circle class="diff-ring-bg" cx="40" cy="40" r="32" />
+              <circle
+                class="diff-ring-fill"
+                cx="40" cy="40" r="32"
+                [style.stroke]="difficultyColor(d.difficulty)"
+                [style.strokeDasharray]="201"
+                [style.strokeDashoffset]="201 - (201 * d.percent / 100)"
+              />
+            </svg>
+            <span class="diff-ring-text">{{ d.percent }}%</span>
+          </div>
+          <div class="diff-label" [style.color]="difficultyColor(d.difficulty)">{{ d.difficulty }}</div>
+          <div class="diff-sub">{{ d.done }}/{{ d.total }}</div>
+        </div>
+      </div>
+      <ng-template #noDiff>
+        <p class="empty-msg">No questions yet.</p>
+      </ng-template>
+    </div>
+  </div>
+
+  <!-- ── Insights ── -->
+  <div class="panel">
+    <div class="panel-header">Insights</div>
+    <div class="insights-grid">
+      <div class="insight-card">
+        <span class="insight-icon" [ngClass]="{'trend-up': weeklyTrend === 'up', 'trend-down': weeklyTrend === 'down'}"
+          >{{ weeklyTrend === 'up' ? '&#9650;' : weeklyTrend === 'down' ? '&#9660;' : '&#9644;' }}</span>
+        <div class="insight-text">
+          <strong>{{ thisWeekCount }}</strong> questions this week
+          <span *ngIf="weeklyTrend !== 'same'"> vs <strong>{{ lastWeekCount }}</strong> last week</span>
+          <span *ngIf="weeklyTrend === 'same'"> &mdash; same as last week</span>
+        </div>
+      </div>
+      <div class="insight-card" *ngIf="weakestTopic">
+        <span class="insight-icon">&#128308;</span>
+        <div class="insight-text">
+          Needs work: <strong>{{ weakestTopic.name }}</strong> ({{ weakestTopic.percent }}% done)
+        </div>
+      </div>
+      <div class="insight-card" *ngIf="strongestTopic">
+        <span class="insight-icon">&#128994;</span>
+        <div class="insight-text">
+          Strongest: <strong>{{ strongestTopic.name }}</strong> ({{ strongestTopic.percent }}% done)
+        </div>
+      </div>
+      <div class="insight-card" *ngIf="estimatedDaysLeft > 0">
+        <span class="insight-icon">&#128197;</span>
+        <div class="insight-text">
+          At your current pace, ~<strong>{{ estimatedDaysLeft }}</strong> more active days to finish all questions
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Recent Sessions ── -->
+  <div class="panel">
+    <div class="panel-header">Recent Sessions</div>
+    <div class="sessions-list" *ngIf="recentSessions.length; else noSessions">
+      <div class="session-card" *ngFor="let session of recentSessions">
+        <div class="session-date">{{ session.date }}</div>
+        <div class="session-questions">
+          <div class="session-q" *ngFor="let q of session.questions">
+            <span class="q-status" [class.q-done]="q.done">{{ q.done ? '&#10003;' : '&#9675;' }}</span>
+            <a class="q-name" [href]="q.url" target="_blank" rel="noopener">{{ q.name }}</a>
+            <span class="q-badge" [ngClass]="'badge-' + q.difficulty.toLowerCase()">{{ q.difficulty }}</span>
+            <span class="q-topic">{{ q.topic }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-template #noSessions>
+      <p class="empty-msg">No practice sessions yet. Go to Home and start picking questions!</p>
+    </ng-template>
+  </div>
+
+</div>

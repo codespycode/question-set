@@ -1,0 +1,154 @@
+<div class="dashboard">
+  <!-- ── Top Bar ── -->
+  <div class="dash-topbar">
+    <h2 class="dash-title">
+      <span class="dash-icon">&#9776;</span> Log Dashboard
+    </h2>
+    <div class="dash-actions">
+      <label class="auto-toggle">
+        <input type="checkbox" [(ngModel)]="autoRefresh" /> Live
+        <span class="live-dot" [class.active]="autoRefresh"></span>
+      </label>
+      <button class="btn-sm" (click)="refresh()">&#8635; Refresh</button>
+      <button class="btn-sm" (click)="download()" [disabled]="!totalCount">&#11015; Export</button>
+      <button class="btn-sm btn-danger" (click)="clear()" [disabled]="!totalCount">&#10005; Clear</button>
+    </div>
+  </div>
+
+  <!-- ── Stats Cards ── -->
+  <div class="stats-row">
+    <div class="stat-card" (click)="filterByLevel('')" [class.selected]="!levelFilter">
+      <div class="stat-value">{{ totalCount }}</div>
+      <div class="stat-label">Total</div>
+    </div>
+    <div class="stat-card stat-debug" (click)="filterByLevel('DEBUG')" [class.selected]="levelFilter === 'DEBUG'">
+      <div class="stat-value">{{ debugCount }}</div>
+      <div class="stat-label">Debug</div>
+    </div>
+    <div class="stat-card stat-info" (click)="filterByLevel('INFO')" [class.selected]="levelFilter === 'INFO'">
+      <div class="stat-value">{{ infoCount }}</div>
+      <div class="stat-label">Info</div>
+    </div>
+    <div class="stat-card stat-warn" (click)="filterByLevel('WARN')" [class.selected]="levelFilter === 'WARN'">
+      <div class="stat-value">{{ warnCount }}</div>
+      <div class="stat-label">Warn</div>
+    </div>
+    <div class="stat-card stat-error" (click)="filterByLevel('ERROR')" [class.selected]="levelFilter === 'ERROR'">
+      <div class="stat-value">{{ errorCount }}</div>
+      <div class="stat-label">Error</div>
+    </div>
+  </div>
+
+  <!-- ── Timeline Chart ── -->
+  <div class="panel" *ngIf="timeline.length">
+    <div class="panel-header">Events Over Time</div>
+    <div class="timeline-chart">
+      <div class="timeline-bar-group" *ngFor="let bucket of timeline; trackBy: trackByLabel">
+        <div class="timeline-stack">
+          <div class="bar bar-error" [style.height]="barHeight(bucket, 'error')"></div>
+          <div class="bar bar-warn" [style.height]="barHeight(bucket, 'warn')"></div>
+          <div class="bar bar-info" [style.height]="barHeight(bucket, 'info')"></div>
+          <div class="bar bar-debug" [style.height]="barHeight(bucket, 'debug')"></div>
+        </div>
+        <span class="timeline-label">{{ bucket.label }}</span>
+      </div>
+    </div>
+    <div class="timeline-legend">
+      <span class="legend-item"><span class="legend-dot debug-dot"></span>Debug</span>
+      <span class="legend-item"><span class="legend-dot info-dot"></span>Info</span>
+      <span class="legend-item"><span class="legend-dot warn-dot"></span>Warn</span>
+      <span class="legend-item"><span class="legend-dot error-dot"></span>Error</span>
+    </div>
+  </div>
+
+  <!-- ── Search & Filters ── -->
+  <div class="panel">
+    <div class="panel-header">Search & Filter</div>
+    <div class="filter-row">
+      <div class="search-box">
+        <span class="search-icon">&#128269;</span>
+        <input
+          type="text"
+          placeholder="Search logs..."
+          [(ngModel)]="searchQuery"
+          (ngModelChange)="applyFilters()"
+          class="search-input"
+        />
+      </div>
+      <select [(ngModel)]="sourceFilter" (ngModelChange)="applyFilters()" class="filter-select">
+        <option value="">All Sources</option>
+        <option *ngFor="let s of sources" [value]="s">{{ s }}</option>
+      </select>
+      <button class="btn-sm" (click)="clearFilters()" *ngIf="searchQuery || levelFilter || sourceFilter">
+        Clear Filters
+      </button>
+    </div>
+    <div class="active-filters" *ngIf="levelFilter || sourceFilter || searchQuery">
+      <span class="filter-tag" *ngIf="levelFilter" (click)="filterByLevel(levelFilter)">
+        Level: {{ levelFilter }} &#10005;
+      </span>
+      <span class="filter-tag" *ngIf="sourceFilter" (click)="sourceFilter=''; applyFilters()">
+        Source: {{ sourceFilter }} &#10005;
+      </span>
+      <span class="filter-tag" *ngIf="searchQuery" (click)="searchQuery=''; applyFilters()">
+        Search: "{{ searchQuery }}" &#10005;
+      </span>
+    </div>
+  </div>
+
+  <!-- ── Source Breakdown (sidebar-style) ── -->
+  <div class="panel-row">
+    <div class="panel panel-sources">
+      <div class="panel-header">Sources</div>
+      <div class="source-list">
+        <div
+          *ngFor="let s of sources"
+          class="source-item"
+          [class.active]="sourceFilter === s"
+          (click)="filterBySource(sourceFilter === s ? '' : s)"
+        >
+          <span class="source-name">{{ s }}</span>
+          <span class="source-badge">{{ (logger.logs | filterBySource:s).length || '—' }}</span>
+        </div>
+        <div *ngIf="!sources.length" class="empty-msg">No sources</div>
+      </div>
+    </div>
+
+    <!-- ── Log Events Table ── -->
+    <div class="panel panel-events">
+      <div class="panel-header">
+        Events
+        <span class="event-count">{{ filteredLogs.length }} of {{ totalCount }}</span>
+      </div>
+      <div class="events-table" *ngIf="filteredLogs.length; else noEvents">
+        <div
+          *ngFor="let entry of filteredLogs; trackBy: trackById"
+          class="event-row"
+          [ngClass]="'level-' + entry.level.toLowerCase()"
+          (click)="toggleExpand(entry.id)"
+        >
+          <div class="event-main">
+            <span class="event-level-badge" [ngClass]="'badge-' + entry.level.toLowerCase()">{{ entry.level }}</span>
+            <span class="event-time">{{ entry.timestamp | date:'HH:mm:ss.SSS' }}</span>
+            <span class="event-source">{{ entry.source }}</span>
+            <span class="event-msg">{{ entry.message }}</span>
+          </div>
+          <div class="event-detail" *ngIf="expandedId === entry.id">
+            <div class="detail-grid">
+              <div class="detail-label">ID</div><div class="detail-value">{{ entry.id }}</div>
+              <div class="detail-label">Timestamp</div><div class="detail-value">{{ entry.timestamp }}</div>
+              <div class="detail-label">Level</div><div class="detail-value">{{ entry.level }}</div>
+              <div class="detail-label">Source</div><div class="detail-value">{{ entry.source }}</div>
+              <div class="detail-label">Message</div><div class="detail-value">{{ entry.message }}</div>
+              <div class="detail-label" *ngIf="entry.data">Data</div>
+              <div class="detail-value detail-data" *ngIf="entry.data">{{ entry.data }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ng-template #noEvents>
+        <p class="empty-msg">{{ totalCount ? 'No events match current filters.' : 'No logs captured yet. Use the app and come back.' }}</p>
+      </ng-template>
+    </div>
+  </div>
+</div>

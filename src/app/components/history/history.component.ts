@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StorageService } from '../../services/storage.service';
+import { LoggerService } from '../../services/logger.service';
 import { HistoryEntry } from '../../models/question.model';
 
 @Component({
@@ -13,7 +14,7 @@ import { HistoryEntry } from '../../models/question.model';
 export class HistoryComponent implements OnInit {
   history: HistoryEntry[] = [];
 
-  constructor(private storage: StorageService) {}
+  constructor(private storage: StorageService, private logger: LoggerService) {}
 
   ngOnInit(): void {
     this.history = this.storage.getHistory();
@@ -23,6 +24,7 @@ export class HistoryComponent implements OnInit {
     if (confirm('Clear all history?')) {
       this.storage.clearHistory();
       this.history = [];
+      this.logger.info('History', 'History cleared');
     }
   }
 

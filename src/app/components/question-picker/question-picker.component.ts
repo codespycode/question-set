@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { QuestionService, FilterOptions } from '../../services/question.service';
 import { StorageService } from '../../services/storage.service';
+import { LoggerService } from '../../services/logger.service';
 import { Question, Difficulty } from '../../models/question.model';
 
 @Component({
@@ -27,7 +28,8 @@ export class QuestionPickerComponent implements OnInit {
 
   constructor(
     private questionService: QuestionService,
-    private storage: StorageService
+    private storage: StorageService,
+    private logger: LoggerService
   ) {}
 
   ngOnInit(): void {
@@ -50,6 +52,7 @@ export class QuestionPickerComponent implements OnInit {
       topic: this.selectedTopic || undefined,
       difficulty: this.selectedDifficulty || undefined
     };
+    this.logger.debug('QuestionPicker', 'Picking questions', { count: this.count, filters });
     this.questionService.getRandomQuestions(this.count, filters).subscribe({
       next: q => {
         this.questions = q;
@@ -58,6 +61,7 @@ export class QuestionPickerComponent implements OnInit {
       error: (err: Error) => {
         this.error = err.message;
         this.loading = false;
+        this.logger.error('QuestionPicker', 'Failed to pick questions', err);
       }
     });
   }
